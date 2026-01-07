@@ -53,6 +53,7 @@ func main() {
 	mux.HandleFunc("/todos", middleware.AuthMiddleware(handlers.Todoshandler))
 	mux.HandleFunc("/todos/", middleware.AuthMiddleware(handlers.Todoshandler))
 	mux.HandleFunc("/users/",middleware.AuthMiddleware(handlers.GetTodosByUserID))
+	mux.HandleFunc("/auth/me/",middleware.AuthMiddleware(handlers.MeHandler))
 
 	log.Println("Server running on :8080")
 	log.Fatal(http.ListenAndServe(":8080", corsMiddleware(mux)))

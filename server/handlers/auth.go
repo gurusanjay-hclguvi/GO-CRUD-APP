@@ -118,3 +118,37 @@ func LoginHandler(w http.ResponseWriter, r *http.Request){
 	})
 
 }
+
+func MeHandler(w http.ResponseWriter, r *http.Request) {
+	// must be GET
+	if r.Method != http.MethodGet {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+
+	// get userId from JWT context
+	userID, err := getUserID(r)
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	var user models.User
+	err = database.Client.
+		Database("todo_db").
+		Collection("users").
+		FindOne(ctx, bson.M{"_id": userID}).
+		Decode(&user)
+
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	// password is already hidden via json:"-"
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(user)
+}
