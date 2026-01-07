@@ -1,27 +1,41 @@
-import type { Todo } from '../types/todo'
+import type { Todo } from '~/types/todo'
 
 export const useTodos = () => {
   const config = useRuntimeConfig()
   const api = config.public.apiBase
 
-  const getTodos = (): Promise<Todo[]> =>
-    $fetch<Todo[]>(`${api}/todos`)
+  const { token } = useAuth()
 
-  const createTodo = (data: Pick<Todo, 'title'>) =>
+  const authHeaders = () => ({
+    Authorization: `Bearer ${token.value}`
+  })
+
+  const getTodos = (): Promise<Todo[]> =>
+    $fetch(`${api}/todos`, {
+      headers: authHeaders()
+    })
+
+  const createTodo = (title: string) =>
     $fetch(`${api}/todos`, {
       method: 'POST',
-      body: data
+      headers: authHeaders(),
+      body: {
+        Title: title,
+        Completed: false
+      }
     })
 
   const updateTodo = (id: number, data: Partial<Todo>) =>
     $fetch(`${api}/todos/${id}`, {
       method: 'PUT',
+      headers: authHeaders(),
       body: data
     })
 
   const deleteTodo = (id: number) =>
     $fetch(`${api}/todos/${id}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: authHeaders()
     })
 
   return {
