@@ -1,0 +1,24 @@
+# binaries
+server
+*.exe
+*.out
+
+# env & secrets
+.env
+.env.*
+
+# test files
+*.test
+coverage
+
+# vendor (ignore if NOT using vendoring)
+vendor/
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+.vscode
+.idea
+
+# logs
+*.log
