@@ -1,5 +1,5 @@
 # ---- Build stage ----
-FROM node:18-alpine AS build
+FROM node:22-alpine AS build
 
 WORKDIR /app
 
@@ -10,12 +10,12 @@ COPY . .
 RUN npm run build
 
 # ---- Production stage ----
-FROM node:18-alpine
+FROM node:22-alpine
 
 WORKDIR /app
 
 ENV NODE_ENV=production
-
+ENV NITRO_PORT=3000
 COPY --from=build /app/.output ./.output
 
 EXPOSE 3000

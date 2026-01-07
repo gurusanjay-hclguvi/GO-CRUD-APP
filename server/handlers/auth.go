@@ -120,13 +120,12 @@ func LoginHandler(w http.ResponseWriter, r *http.Request){
 }
 
 func MeHandler(w http.ResponseWriter, r *http.Request) {
-	// must be GET
+
 	if r.Method != http.MethodGet {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
 
-	// get userId from JWT context
 	userID, err := getUserID(r)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
@@ -147,8 +146,6 @@ func MeHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-
-	// password is already hidden via json:"-"
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(user)
 }
